@@ -1,0 +1,14 @@
+.login-container {
+    //background-color: whitesmoke;
+    max-width: none !important;
+    height: 70vh;
+}
+.logo-background {
+    background-image: radial-gradient(#38c172, #2c615a);
+}
+.btn-custom-blue {
+    background-color: blue($color: #38c172);
+}
+.red-star {
+    color: red;
+}

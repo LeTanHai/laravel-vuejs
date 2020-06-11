@@ -1,0 +1,122 @@
+<template>
+    <div>
+        <b-modal
+            size="md"
+            id="user_modal_combo_box"
+            ref="user_modal_combo_box"
+            hide-footer
+            scrollable
+            header-text-variant="light"
+            header-class="nav-custom">
+            <template v-slot:modal-title> View </template>
+            <b-container>
+                <b-row>
+                    <b-col cols="7">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">{{$t('users.combo_box.keySearch')}}</span>
+                            </div>
+                            <b-form-input class="form-control"
+                                            v-model="filter.keySearch"
+                                            >
+                            </b-form-input>
+                        </div>
+                    </b-col>
+                    <b-col cols="5">
+                        <b-button @click.prevent="searchUser" class="btn-cus-modal btn-cus-search">{{$t('users.btn.btn_search')}}</b-button>
+                        <b-button @click.prevent="newUser" class="btn-cus-modal btn-cus-new">{{$t('users.btn.new')}}</b-button>
+                    </b-col>
+                </b-row>
+                <b-row>
+                    <b-col>
+                        <b-table 
+                            striped hover 
+                            head-variant="primary"
+                            small
+                            @row-clicked="clickRow"
+                            :items="items" 
+                            :fields="fields">
+                        </b-table>
+                    </b-col>
+                </b-row>
+            </b-container>
+        </b-modal>
+    </div>
+</template>
+
+<script>
+export default {
+    data() {
+        return {
+            filter: {
+                keySearch: "",
+                aa: {
+                    bb:""
+                }
+            },
+            selected: {
+                id: "",
+                email: "",
+                name: "",
+            },
+            dataCallBack: {
+                action: "",
+                data: {}
+            },
+            items: [],
+            fields: [
+                {
+                    key: 'id',
+                    lable: this.$t('users.fields.id'),
+                    sortable: true
+                },
+                {
+                    key: 'name',
+                    lable: this.$t('users.fields.name'),
+                    sortable: true
+                },
+                {
+                    key: 'email',
+                    lable: this.$t('users.fields.email'),
+                    sortable: true
+                }
+            ]
+        }
+    },
+    methods: {
+        async searchUser() {
+            let data = $.extend(true, {}, this.filter);
+            data.type = "combo_box";
+            try {
+                const response = await axios.get('/combo_box', {params:data});
+                this.items = response.data
+            } catch{
+                console.error(error.toString());
+            }
+            
+        },
+        newUser() {
+
+        },
+        showModal() {
+            this.$refs["user_modal_combo_box"].show();
+        },
+        clickRow(item) {
+            this.selected = _.clone(item, true);
+            console.log(this.selected);
+            this.dataCallBack.data = _.clone(this.selected);
+            this.dataCallBack.action = "selected_user"
+            this.$refs["user_modal_combo_box"].hide();
+            this.callBack();
+        },
+        callBack(objInit) {
+            if (typeof objInit === 'undefined') {
+                if (typeof this.$parent.callBack == 'function') {
+                    this.$parent.callBack(this.dataCallBack);
+                }
+                return;
+            }
+        }
+    }
+}
+</script>
