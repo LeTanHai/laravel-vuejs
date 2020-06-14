@@ -33,11 +33,15 @@ class ProductController extends Controller
                     $objTmp->origin["lng"] = floatval(explode(",", $item->location->origin)[1]);
                     $objTmp->destination["lat"] = floatval(explode(",", $item->location->destination)[0]);
                     $objTmp->destination["lng"] = floatval(explode(",", $item->location->destination)[1]);
-                    $objTmp->location_new["lat"] = floatval(explode(",", $item->location_new)[0]);
-                    $objTmp->location_new["lng"] = floatval(explode(",", $item->location_new)[1]);
+                    $objTmp->location_new["lat"] = $objTmp->origin["lat"];
+                    $objTmp->location_new["lng"] = $objTmp->origin["lng"];
+                    if (!empty($item->location_new)) {
+                        $objTmp->location_new["lat"] = floatval(explode(",", $item->location_new)[0]);
+                        $objTmp->location_new["lng"] = floatval(explode(",", $item->location_new)[1]);
+                    }
                     $objTmp->status = $item->status;
                     $objTmp->pickup = $item->pickup;
-                    $list[] = $objTmp;
+                    $list = $objTmp;
                 }
                 return response()->json($list);
             case "view":
@@ -53,6 +57,8 @@ class ProductController extends Controller
                 $objTmp->origin["lng"] = floatval(explode(",", $item->location->origin)[1]);
                 $objTmp->destination["lat"] = floatval(explode(",", $item->location->destination)[0]);
                 $objTmp->destination["lng"] = floatval(explode(",", $item->location->destination)[1]);
+                $objTmp->location_new["lat"] = $objTmp->origin["lat"];
+                $objTmp->location_new["lng"] = $objTmp->origin["lng"];
                 if (!empty($item->location_new)) {
                     $objTmp->location_new["lat"] = floatval(explode(",", $item->location_new)[0]);
                     $objTmp->location_new["lng"] = floatval(explode(",", $item->location_new)[1]);   
@@ -90,6 +96,8 @@ class ProductController extends Controller
                     $objTmp->origin["lng"] = floatval(explode(",", $item->location->origin)[1]);
                     $objTmp->destination["lat"] = floatval(explode(",", $item->location->destination)[0]);
                     $objTmp->destination["lng"] = floatval(explode(",", $item->location->destination)[1]);
+                    $objTmp->location_new["lat"] = $objTmp->origin["lat"];
+                    $objTmp->location_new["lng"] = $objTmp->origin["lng"];
                     if (!empty($item->location_new)) {
                         $objTmp->location_new["lat"] = floatval(explode(",", $item->location_new)[0]);
                         $objTmp->location_new["lng"] = floatval(explode(",", $item->location_new)[1]);
