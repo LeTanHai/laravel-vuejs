@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Product;
 use App\Role;
+use App\Location;
 
 class User extends Authenticatable
 {

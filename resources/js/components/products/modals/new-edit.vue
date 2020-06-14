@@ -49,18 +49,20 @@
                 </b-form-invalid-feedback>
             </b-form-group>
             <b-form-group label-for="user_id-input"
-                        label-cols-sm="3"
+                        label-cols-sm="2"
                         label-align-sm="right"
                             >
-                <template slot="label">{{$t('users.fields.user_id')}}<span class="red-star">*</span></template>
+                <template slot="label">{{$t('users.fields.user_name')}}<span class="red-star">*</span></template>
                 <b-row>
                     <b-col cols="12">
                         <div class="input-group">
-                            <input type="text"  v-model="click_selected.user_name" class="form-control"  aria-describedby="basic-addon2">
+                            <input type="text" v-model="click_selected.user_name" class="form-control"
+                            aria-describedby="basic-addon2" v-on:keyup="handlerEnter" v-on:blur="handleSearch">
                             <div class="input-group-append">
-                                <button class="btn btn-cus-selected"  @click.prevent="call_modal_list_combo_box('user_modals_combo_box')" type="button">
-                                    {{$t('users.btn.user_search')}}
-                                </button>
+                                <b-button class="btn btn-custom-search" variant="secondary" 
+                                    @click.prevent="call_modal_list_combo_box('user_modals_combo_box')">
+                                    {{$t('users.btn.btn_search')}}
+                                </b-button>
                             </div>
                         </div>        
                     </b-col>
@@ -77,9 +79,10 @@
                 <template slot="label">{{$t('products.fields.address')}}<span class="red-star">*</span></template>
                 <b-form-input
                     id="address-input"
-                    v-model="fields_values.address"
+                    v-model="click_selected.address"
                     :state="valid_address"
                     required
+                    disabled
                     >
                 </b-form-input>
                 <b-form-invalid-feedback :state="valid_address">
@@ -105,8 +108,14 @@
             </b-form-group>
             <b-form-group v-if='error_messages.all_error!=""'>
                 <b-alert show variant="danger"> {{$t(error_messages.all_error)}}</b-alert>
-                </b-form-group>
-            <b-button right @click.prevent="handlenew"> Save </b-button>
+            </b-form-group>
+            <template v-if="objInit.typeModal == 'New'">
+                <b-button right @click.prevent="handlenew"> Save </b-button>
+            </template>
+            <template v-else>
+                <b-button right @click.prevent="handleEdit"> Save </b-button>
+                <b-button right @click.prevent="handleDelete"> Delete </b-button>
+            </template>
         </b-modal>
         <user_modals_combo_box ref="user_modals_combo_box"></user_modals_combo_box>
     </div>
@@ -123,26 +132,27 @@ export default {
                 name: "",
                 code: "",
                 description: "",
-                address: "",
+                location_id: "",
                 user_id: ""
             },
             fields_required: {
                 name: true,
                 code: true,
-                address: true,
+                location_id: true,
                 user_id: true
             },
             error_messages: {
                 name: "",
                 code: "",
                 description: "",
-                address: "",
+                location_id: "",
                 all_error: "",
                 user_id: ""
             },
             latLongAddress: "",
             click_selected: {
-                user_name: ""
+                user_name: "",
+                address: ""
             },
             dataCallBack: {
                 action: "",
@@ -150,17 +160,27 @@ export default {
             }
         }
     },
+    // watch: {
+    //     click_selected: {
+    //         handler(){
+    //             this.fields_values.user_id = "";
+    //             this.fields_values.address = "";
+    //         },
+    //         immediate: true,
+    //         deep: true
+    //     }
+    // },
     computed: {
         valid_name() {
             if (!this.fields_values.name) {
                 return null;
             }
             if (this.fields_values.name.length < 2) {
-                this.error_messages.name = "products.error.name.min";
+                this.error_messages.name = "products.errors.name.min";
                 return false;
             }
             if (this.fields_values.name.length > 15) {
-                this.error_messages.name = "products.error.name.max";
+                this.error_messages.name = "products.errors.name.max";
                 return false;
             }
             this.error_messages.name = "";
@@ -172,11 +192,11 @@ export default {
                 return null;
             }
             if (this.fields_values.code.length < 2) {
-                this.error_messages.code = "products.error.code.min";
+                this.error_messages.code = "products.errors.code.min";
                 return false;
             }
             if (this.fields_values.code.length > 15) {
-                this.error_messages.code = "products.error.code.max";
+                this.error_messages.code = "products.errors.code.max";
                 return false;
             }
             this.error_messages.code = "";
@@ -184,18 +204,18 @@ export default {
             return true;
         },
         valid_address() {
-            if (!this.fields_values.address) {
+            if (!this.fields_values.location_id) {
                 return null;
             }
-            if (this.fields_values.address.length < 2) {
-                this.error_messages.address = "products.error.address.min";
+            if (this.fields_values.location_id.length < 2) {
+                this.error_messages.location_id = "products.errors.address.min";
                 return false;
             }
-            if (this.fields_values.address.length > 15) {
-                this.error_messages.address = "products.error.address.max";
+            if (this.fields_values.location_id.length > 15) {
+                this.error_messages.location_id = "products.errors.address.max";
                 return false;
             }
-            this.error_messages.address = "";
+            this.error_messages.location_id = "";
             this.error_messages.all_error = "";
             return true;
         },
@@ -212,25 +232,41 @@ export default {
                 return null;
             }
             let check = this.fields_values.user_id > 0;
-            this.error_messages.user_id = check?"":"products.error.user_id.invalid";
+            this.error_messages.user_id = check?"":"products.errors.user_id.invalid";
             return check;
         }
     },
     methods: {
-        showModal(objInit) {
+        async showModal(objInit) {
             _.extend(this.objInit,objInit);
             switch (this.objInit.typeModal){
                 case "New":
                     this.fields_values = {
                         name: "",
                         code: "",
-                        address: "",
+                        location_id: "",
+                        user_id: "",
                         description: ""
                     }
+                    this.click_selected.user_name = "";
+                    this.click_selected.address = "";
                     this.error_messages.all_error = "";
                     return this.$refs["product_modal_new"].show();
                 case "Edit":
-
+                    console.log(this.objInit)
+                    let data = {
+                        type: 'view',
+                        id: this.objInit.id
+                    }
+                    this.click_selected.user_name = "";
+                    this.click_selected.address = "";
+                    this.fields_values.user_id = "";
+                    const response = await axios.get('/product', {params: data});
+                    _.extend(this.fields_values, response.data);
+                    this.click_selected.user_name = response.data.email;
+                    this.handleSearch();
+                    console.log(this.fields_values);
+                    return this.$refs["product_modal_new"].show();    
             }
         },
         checkValidateAllFields() {
@@ -246,12 +282,62 @@ export default {
             }
             return true;
         },
-        handlenew() {
+        async handlenew() {
             if (this.checkValidateAllFields()) {
-                console.log("Trueeeeeee");
-                this.geocodeAddress();
-                console.log(this.latLongAddress);
+                try {
+                    let data = _.clone(this.fields_values, true);
+                    console.log("data::::",data);
+                    data.type = "new";
+                    const response = await axios.post('/newProduct', data);
+                    if (response.data.error) {
+                        return this.error_messages.all_error = response.data.error;
+                    }
+                    this.$refs["product_modal_new"].hide();
+                    this.callBack();
+                }
+                catch(error) {
+                    console.log(error);
+                }
+
             }
+        },
+        async handleEdit() {
+            console.log("edit");
+            if (this.checkValidateAllFields()) {
+                let data = _.clone(this.fields_values, true);
+                console.log("data::::",data);
+                data.type = "edit";
+                data.id = this.objInit.id;
+                const response = await axios.post('/newProduct', data);
+                console.log(response);
+            }
+        },
+        handleDelete() {
+            console.log("Delete")
+        },
+        async handleSearch() {
+            let data = {
+                keySearch: this.click_selected.user_name,
+                type: "combo_box"
+            }
+            const response = await axios.get('/combo_box', {params: data});
+            if (response.data.length === 1) {
+                this.fields_values.user_id = response.data[0].id;
+                this.fields_values.location_id = response.data[0].location_id;
+                this.click_selected.user_name = response.data[0].name;
+                this.click_selected.address = response.data[0].origin;
+                return;
+            }
+            this.fields_values.user_id = "";
+            this.fields_values.location_id = "";
+        },
+        async handlerEnter(event) {
+            if (event.keyCode === 13) {
+                this.handleSearch();
+            }
+            this.fields_values.user_id = "";
+            this.fields_values.location_id = "";
+            this.click_selected.address = ""
         },
         geocodeAddress() {
             var geocoder = new google.maps.Geocoder();
@@ -263,7 +349,7 @@ export default {
             });
         },
         call_modal_list_combo_box(nameCombo) {
-            this.$refs[nameCombo].showModal();
+            this.$refs[nameCombo].showModal({keySearch: this.click_selected.user_name});
         },
         callBack(objInit) {
             if (typeof objInit === 'undefined') {
@@ -274,7 +360,9 @@ export default {
             switch (objInit.action) {
                 case "selected_user":
                     this.fields_values.user_id = objInit.data.id;
+                    this.fields_values.location_id = objInit.data.location_id;
                     this.click_selected.user_name = objInit.data.name;
+                    this.click_selected.address = objInit.data.origin;
                     break;
             }
         }

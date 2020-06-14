@@ -17,7 +17,7 @@ class CreateProductsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('code')->unique();
-            $table->string('location_new');
+            $table->string('location_new')->nullable();
             $table->string('description')->nullable();
             $table->integer('status')->default(0); // 0 disable, 1 being transported, 2 finish
             $table->integer('pickup')->default(0);

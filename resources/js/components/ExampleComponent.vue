@@ -2,7 +2,7 @@
     <div>
         <b-container fluid>
             <div class="row justify-content-center">
-                <div class="col-md-12">
+                <div class="mt-3 col-md-12">
                     <progress_bar :dataInit="data"></progress_bar>
                     <div class="card">
                         <div class="card-header" style="width: 100%; height: 40px;"> Google API </div>
@@ -93,7 +93,7 @@
                     .get('/product', {params: this.action})
                     .then(response=>{
                         console.log("getProduct::::",response.data)
-                        this.data.code = response.data[0].code;
+                        this.data.code = response.data.code;
                     })
                     .catch(err => {
                         console.log('')
@@ -111,7 +111,7 @@
                 axios 
                     .get('/product', {params: this.action})
                     .then(response=> {
-                        this.location_item = _.clone(response.data[0], true)
+                        this.location_item = _.clone(response.data, true)
                         console.log("Location_item:::", this.location_item)
                         this.data.status = this.location_item.status
                         this.data.pickup = this.location_item.pickup

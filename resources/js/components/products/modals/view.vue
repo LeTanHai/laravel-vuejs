@@ -4,7 +4,12 @@
         id="product_modal_view"
         ref="product_modal_view"
         hide-footer
-        scrollable>
+        scrollable
+        header-text-variant="light"
+        header-class="nav-custom">
+        <template v-slot:modal-title>
+            {{$t('products.modal_title.view')}}
+        </template>
         <b-container fluid>
             <example-component :data_init="data.action"></example-component>
         </b-container>
@@ -23,7 +28,6 @@
         methods: {
             showModal(objInit) {
                 _.extend(this.data, objInit);
-                console.log("action view:::",this.data.action);
                 this.$refs['product_modal_view'].show()
             },
         }

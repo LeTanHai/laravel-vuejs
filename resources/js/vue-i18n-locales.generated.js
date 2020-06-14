@@ -10,6 +10,13 @@ export default {
             "failed": "These credentials do not match our records.",
             "throttle": "Too many login attempts. Please try again in {seconds} seconds."
         },
+        "global_config": {
+            "status": {
+                "not_pickup": "Not Pickup",
+                "shipping": "Shipping",
+                "delivered": "Delivered"
+            }
+        },
         "pages": {
             "admin_login": {
                 "app_name1": "IMS",
@@ -131,7 +138,8 @@ export default {
         "products": {
             "modal_title": {
                 "new": "New",
-                "edit": "Edit"
+                "edit": "Edit",
+                "view": "View"
             },
             "fields": {
                 "name": "Name",
@@ -140,6 +148,16 @@ export default {
                 "description": "Description"
             },
             "errors": {
+                "name": {
+                    "min": "Name must have > 1 character",
+                    "max": "Name must have < 15 characters",
+                    "invalid": "Name invalid !"
+                },
+                "code": {
+                    "min": "Code must have > 1 character",
+                    "max": "Code must have < 15 characters",
+                    "invalid": "Code invalid !"
+                },
                 "error_all": "Check red fields !",
                 "required": "Check required fields !"
             }
@@ -150,7 +168,17 @@ export default {
             },
             "btn": {
                 "new": "New",
-                "btn_search": "Search"
+                "btn_search": "Search",
+                "limit": "Limit"
+            },
+            "fields": {
+                "id": "ID",
+                "name": "Name",
+                "email": "Email",
+                "user_name": "User Name"
+            },
+            "filter": {
+                "all": "All"
             }
         },
         "validation": {

@@ -35,6 +35,8 @@ Route::get('user', 'PagesController@userIndex')->name('user_index');
 //users
 Route::get('/combo_box', 'UserController@search');
 
+Route::post('/newProduct', 'ProductController@modifyProduct');
+
 // // Gửi dữ liệu đồng thời tạo sự kiện gửi Location
 // Route::post('/map', function (Request $request) {
 //     $lat = $request->input('lat');

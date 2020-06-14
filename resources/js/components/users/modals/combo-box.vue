@@ -11,7 +11,7 @@
             <template v-slot:modal-title> View </template>
             <b-container>
                 <b-row>
-                    <b-col cols="7">
+                    <b-col cols="12">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">{{$t('users.combo_box.keySearch')}}</span>
@@ -20,14 +20,13 @@
                                             v-model="filter.keySearch"
                                             >
                             </b-form-input>
+                            <div class="input-group-append">
+                                <b-button @click.prevent="searchUser" class="btn-cus-modal btn-cus-search">{{$t('users.btn.btn_search')}}</b-button>
+                            </div>
                         </div>
                     </b-col>
-                    <b-col cols="5">
-                        <b-button @click.prevent="searchUser" class="btn-cus-modal btn-cus-search">{{$t('users.btn.btn_search')}}</b-button>
-                        <b-button @click.prevent="newUser" class="btn-cus-modal btn-cus-new">{{$t('users.btn.new')}}</b-button>
-                    </b-col>
                 </b-row>
-                <b-row>
+                <b-row class="mt-3">
                     <b-col>
                         <b-table 
                             striped hover 
@@ -50,9 +49,6 @@ export default {
         return {
             filter: {
                 keySearch: "",
-                aa: {
-                    bb:""
-                }
             },
             selected: {
                 id: "",
@@ -95,11 +91,12 @@ export default {
             }
             
         },
-        newUser() {
-
-        },
-        showModal() {
+        showModal(objInit) {
+            if (typeof objInit != 'undefined') {
+                this.filter.keySearch = objInit.keySearch;
+            }
             this.$refs["user_modal_combo_box"].show();
+            this.searchUser();
         },
         clickRow(item) {
             this.selected = _.clone(item, true);

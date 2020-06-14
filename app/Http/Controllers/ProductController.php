@@ -3,98 +3,180 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Collection;
 use App\Mail\OrderShipped;
 
 
 use Illuminate\Http\Request;
 use App\Product;
+use App\GlobalConfig;
 
 class ProductController extends Controller
-{
+{   
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function getProduct(Request $request) {
         switch ($request->type){
             case "none":
                 $product = Product::where('user_id', Auth::user()->id)
                             ->get();
                 foreach($product as $item) {                    
-                    $resData = new \stdClass;
-                    $resData->name = $item->name;
-                    $resData->code = $item->code;
-                    $resData->user_id = $item->user_id;
-                    $resData->description = $item->description;
-                    $resData->origin["lat"] = floatval(explode(",", $item->location->origin)[0]);
-                    $resData->origin["lng"] = floatval(explode(",", $item->location->origin)[1]);
-                    $resData->destination["lat"] = floatval(explode(",", $item->location->destination)[0]);
-                    $resData->destination["lng"] = floatval(explode(",", $item->location->destination)[1]);
-                    $resData->location_new["lat"] = floatval(explode(",", $item->location_new)[0]);
-                    $resData->location_new["lng"] = floatval(explode(",", $item->location_new)[1]);
-                    $resData->status = $item->status;
-                    $resData->pickup = $item->pickup;
-                    $list[] = $resData;
+                    $objTmp = new \stdClass;
+                    $objTmp->name = $item->name;
+                    $objTmp->code = $item->code;
+                    $objTmp->user_id = $item->user_id;
+                    $objTmp->description = $item->description;
+                    $objTmp->origin["lat"] = floatval(explode(",", $item->location->origin)[0]);
+                    $objTmp->origin["lng"] = floatval(explode(",", $item->location->origin)[1]);
+                    $objTmp->destination["lat"] = floatval(explode(",", $item->location->destination)[0]);
+                    $objTmp->destination["lng"] = floatval(explode(",", $item->location->destination)[1]);
+                    $objTmp->location_new["lat"] = floatval(explode(",", $item->location_new)[0]);
+                    $objTmp->location_new["lng"] = floatval(explode(",", $item->location_new)[1]);
+                    $objTmp->status = $item->status;
+                    $objTmp->pickup = $item->pickup;
+                    $list[] = $objTmp;
                 }
                 return response()->json($list);
             case "view":
                 $item = Product::find($request->id);                  
-                $resData = new \stdClass;
-                $resData->id = $item->id;
-                $resData->name = $item->name;
-                $resData->code = $item->code;
-                $resData->user_id = $item->user_id;
-                $resData->description = $item->description;
-                $resData->origin["lat"] = floatval(explode(",", $item->location->origin)[0]);
-                $resData->origin["lng"] = floatval(explode(",", $item->location->origin)[1]);
-                $resData->destination["lat"] = floatval(explode(",", $item->location->destination)[0]);
-                $resData->destination["lng"] = floatval(explode(",", $item->location->destination)[1]);
-                $resData->location_new["lat"] = floatval(explode(",", $item->location_new)[0]);
-                $resData->location_new["lng"] = floatval(explode(",", $item->location_new)[1]);
-                $resData->status = $item->status;
-                $resData->pickup = $item->pickup;
-                $list[] = $resData;
-                return response()->json($list);
-            case "admin":
-                $product = Product::get();
-                foreach($product as $item) {                  
-                    $resData = new \stdClass;
-                    $resData->id = $item->id;
-                    $resData->name = $item->name;
-                    $resData->code = $item->code;
-                    $resData->user_id = $item->user_id;
-                    $resData->description = $item->description;
-                    $resData->origin["lat"] = floatval(explode(",", $item->location->origin)[0]);
-                    $resData->origin["lng"] = floatval(explode(",", $item->location->origin)[1]);
-                    $resData->destination["lat"] = floatval(explode(",", $item->location->destination)[0]);
-                    $resData->destination["lng"] = floatval(explode(",", $item->location->destination)[1]);
-                    $resData->location_new["lat"] = floatval(explode(",", $item->location_new)[0]);
-                    $resData->location_new["lng"] = floatval(explode(",", $item->location_new)[1]);
-                    $resData->status = $item->status;
-                    $resData->pickup = $item->pickup;
-                    $list[] = $resData;
+                $objTmp = new \stdClass;
+                $objTmp->id = $item->id;
+                $objTmp->name = $item->name;
+                $objTmp->code = $item->code;
+                $objTmp->user_id = $item->user_id;
+                $objTmp->email = $item->user->email;
+                $objTmp->description = $item->description;
+                $objTmp->origin["lat"] = floatval(explode(",", $item->location->origin)[0]);
+                $objTmp->origin["lng"] = floatval(explode(",", $item->location->origin)[1]);
+                $objTmp->destination["lat"] = floatval(explode(",", $item->location->destination)[0]);
+                $objTmp->destination["lng"] = floatval(explode(",", $item->location->destination)[1]);
+                if (!empty($item->location_new)) {
+                    $objTmp->location_new["lat"] = floatval(explode(",", $item->location_new)[0]);
+                    $objTmp->location_new["lng"] = floatval(explode(",", $item->location_new)[1]);   
                 }
-                return response()->json($list);
+                $objTmp->status = $item->status;
+                $objTmp->pickup = $item->pickup;
+                return response()->json($objTmp);
+            case "admin":
+                $product = Product::select('products.*', 'users.email as email')
+                                ->leftJoin('users', 'users.id', '=', 'products.user_id')
+                                ->where('email', 'like', "%{$request->keySearch}%")
+                                ->orWhere('products.name', 'like', "%{$request->keySearch}%")
+                                ->orWhere('products.code', 'like', "%{$request->keySearch}%")
+                                ->orWhere('products.status', 'like', "%{$request->keySearch}%");
+                $totalRecord = $product->count();
+                if ($request->limit == "*") {
+                    $listProduct = $product->offset(0);
+                }
+                else {
+                    $offset = (intval($request->currentPage) - 1) * intval($request->limit);
+                    $listProduct = $product->offset($offset)->limit(intval($request->limit));
+                }
+                $listProduct = $product->get()->sortBy("products.id");
+                $list = [];
+                foreach($listProduct as $item) {                  
+                    $objTmp = new \stdClass;
+                    $objTmp->id = $item->id;
+                    $objTmp->name = $item->name;
+                    $objTmp->code = $item->code;
+                    $objTmp->user_id = $item->user_id;
+                    $objTmp->email = $item->email;
+                    $objTmp->description = $item->description;
+                    $objTmp->pickup = $item->pickup;
+                    $objTmp->origin["lat"] = floatval(explode(",", $item->location->origin)[0]);
+                    $objTmp->origin["lng"] = floatval(explode(",", $item->location->origin)[1]);
+                    $objTmp->destination["lat"] = floatval(explode(",", $item->location->destination)[0]);
+                    $objTmp->destination["lng"] = floatval(explode(",", $item->location->destination)[1]);
+                    if (!empty($item->location_new)) {
+                        $objTmp->location_new["lat"] = floatval(explode(",", $item->location_new)[0]);
+                        $objTmp->location_new["lng"] = floatval(explode(",", $item->location_new)[1]);
+                    } 
+                    $objTmp->status = GlobalConfig::getListStatus()[$item->status];
+                    $objTmp->created_at = new \DateTime($item["created_at"]);
+                    $objTmp->created_at = $objTmp->created_at->format(env('DATETIMEFORMAT', 'm/d/Y h:i A'));
+                    $objTmp->updated_at = $item["updated_at"];
+                    if (!empty($item["updated_at"])) {
+                        $objTmp->updated_at = new \DateTime($item["updated_at"]);
+                        $objTmp->updated_at = $objTmp->updated_at->format(env('DATETIMEFORMAT', 'm/d/Y h:i A'));
+                    }
+                    $list[] = $objTmp;
+                }
+                return response()->json(["listProduct" => $list,
+                                        "totalRecord" => $totalRecord]);
         }
     }
 
+    public function modifyProduct(Request $request) {
+        switch($request->type) {
+            case "new":
+                $product = [
+                    'name' => $request->name,
+                    'code' => $request->code,
+                    'description' => $request->description,
+                    'user_id' => intval($request->user_id),
+                    'location_id' => intval($request->location_id)
+                ];
+                try {
+                    $data = Product::create($product);
+                    if (!$data) {
+                        return response()->json(["error" => "products.errors.motify.new"]);    
+                    }
+                    return response()->json(["error" => "", "data" => $data]);
+                }
+                catch(\Illuminate\Database\QueryException $e) {
+                    return response()->json(["error" => "products.errors.motify.new"]);   
+                }
+            case "edit":
+                try {
+                    $newProduct = $request->except(['id', 'type', 'email', 'origin', 'destination', 'location_new', 'status', 'pickup']);
+                    $oldProduct = Product::find($request->id);
+                    $diff = array_diff_assoc($newProduct, $oldProduct->toArray());
+                    if (empty($diff)) {
+                        return response()->json(["error" => "", "status" => true]);
+                    }
+                    $oldProduct->fill($diff);
+                    return response()->json(["error" => "", "status" => $oldProduct->save()]);
+                }
+                catch(\Illuminate\Database\QueryException $e) {
+                    return response()->json(["error" => "products.errors.motify.edit"]);
+                }
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function getInfoItem(Request $request) {
         $product = Product::where('user_id', 1)
                             ->get();
         foreach($product as $item) {                    
-            $resData = new \stdClass;
-            $resData->name = $item->name;
-            $resData->code = $item->code;
-            $resData->description = $item->description;
-            $resData->origin["lat"] = floatval(explode(",", $item->location->origin)[0]);
-            $resData->origin["lng"] = floatval(explode(",", $item->location->origin)[1]);
-            $resData->destination["lat"] = floatval(explode(",", $item->location->destination)[0]);
-            $resData->destination["lng"] = floatval(explode(",", $item->location->destination)[1]);
-            $resData->location_new["lat"] = floatval(explode(",", $item->location_new)[0]);
-            $resData->location_new["lng"] = floatval(explode(",", $item->location_new)[1]);
-            $resData->status = $item->status;
-            $resData->pickup = $item->pickup;
-            $list = $resData;
+            $objTmp = new \stdClass;
+            $objTmp->name = $item->name;
+            $objTmp->code = $item->code;
+            $objTmp->description = $item->description;
+            $objTmp->origin["lat"] = floatval(explode(",", $item->location->origin)[0]);
+            $objTmp->origin["lng"] = floatval(explode(",", $item->location->origin)[1]);
+            $objTmp->destination["lat"] = floatval(explode(",", $item->location->destination)[0]);
+            $objTmp->destination["lng"] = floatval(explode(",", $item->location->destination)[1]);
+            $objTmp->location_new["lat"] = floatval(explode(",", $item->location_new)[0]);
+            $objTmp->location_new["lng"] = floatval(explode(",", $item->location_new)[1]);
+            $objTmp->status = $item->status;
+            $objTmp->pickup = $item->pickup;
+            $list = $objTmp;
         }
         return response()->json($list);
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function updateStatus(Request $request) {
         $product = Product::where('code',$request->code)->get();
         $product[0]->status = $request->status;
@@ -108,86 +190,16 @@ class ProductController extends Controller
                                 "number" => 201]);
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function updateLocationProduct(Request $request) {
         $product = Product::where('code', $request->code)->get();
         $product[0]->location_new = $request->location_new;
         return response()->json(["product" => $product,
                                 "status" => $product[0]->save(),
                                 "number" => 201]);
-    }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }
