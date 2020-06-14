@@ -10977,3 +10977,21 @@ a.text-dark:focus {
   color: red;
 }
 
+.btn-custom-search {
+  min-width: 150px;
+}
+
+.nav-custom {
+  background: gray !important;
+}
+
+.custom-pagination {
+  margin-right: auto;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.custom-table {
+  min-height: 250px !important;
+}
+
