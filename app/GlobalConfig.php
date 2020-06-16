@@ -7,7 +7,7 @@ class GlobalConfig {
         return [
             0 => __('global_config.status.not_pickup'),
             1 => __('global_config.status.shipping'),
-            2 => __('global_config.status.dilivered')
+            2 => __('global_config.status.delivered')
         ];
     }
 }
