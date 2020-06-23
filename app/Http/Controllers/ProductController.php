@@ -132,7 +132,7 @@ class ProductController extends Controller
                     if (!$data) {
                         return response()->json(["error" => "products.errors.motify.new"]);    
                     }
-                    return response()->json(["error" => "", "data" => $data]);
+                    return response()->json(["error" => "", "data" => $data->id]);
                 }
                 catch(\Illuminate\Database\QueryException $e) {
                     return response()->json(["error" => "products.errors.motify.new"]);   
@@ -150,6 +150,17 @@ class ProductController extends Controller
                 }
                 catch(\Illuminate\Database\QueryException $e) {
                     return response()->json(["error" => "products.errors.motify.edit"]);
+                }
+            case "delete":
+                try{
+                    $product = Product::find($request->id)->delete();
+                    if (!$product) {
+                        return response()->json(["error" => "products.errors.motify.delete"]);
+                    }
+                    return response()->json(["error" => ""]);
+                }
+                catch(\Illuminate\Database\QueryException $e) {
+                    return response()->json(["error" => "products.errors.motify.delete"]);
                 }
         }
     }

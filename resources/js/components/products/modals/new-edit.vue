@@ -110,11 +110,11 @@
                 <b-alert show variant="danger"> {{$t(error_messages.all_error)}}</b-alert>
             </b-form-group>
             <template v-if="objInit.typeModal == 'New'">
-                <b-button right @click.prevent="handlenew"> Save </b-button>
+                <b-button class="text-right" right @click.prevent="handlenew"> Save </b-button>
             </template>
             <template v-else>
-                <b-button right @click.prevent="handleEdit"> Save </b-button>
-                <b-button right @click.prevent="handleDelete"> Delete </b-button>
+                <b-button class="text-right" @click.prevent="handleEdit"> Save </b-button>
+                <b-button class="text-right" @click.prevent="handleDelete"> Delete </b-button>
             </template>
         </b-modal>
         <user_modals_combo_box ref="user_modals_combo_box"></user_modals_combo_box>
@@ -160,16 +160,6 @@ export default {
             }
         }
     },
-    // watch: {
-    //     click_selected: {
-    //         handler(){
-    //             this.fields_values.user_id = "";
-    //             this.fields_values.address = "";
-    //         },
-    //         immediate: true,
-    //         deep: true
-    //     }
-    // },
     computed: {
         valid_name() {
             if (!this.fields_values.name) {
@@ -313,7 +303,40 @@ export default {
             }
         },
         handleDelete() {
-            console.log("Delete")
+            this.$bvModal.msgBoxConfirm(this.$t("products.modal_delete.content"), {
+                    title: this.$t("products.modal_delete.title"),
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'danger',
+                    okTitle: this.$t("products.modal_delete.btn_ok"),
+                    cancelTitle: this.$t("products.modal_delete.btn_no"),
+                    footerClass: 'p-2',
+                    hideHeaderClose: false,
+                    centered: true
+                })
+                        .then(value => {
+                            if (value === true) {
+                                let data = {
+                                    id: this.fields_values.id,
+                                    type: 'delete'
+                                }
+                                axios
+                                    .post("/newProduct", data)
+                                    .then(response => {
+                                        if (response.data.error) {
+                                            return this.error_messages.all = response.data.error;
+                                        }
+                                        this.$refs['product_modal_new'].hide();
+                                    })
+                                    .catch(error => console.log(error))
+                                    .finally(() => {
+                                        this.$parent.callBack();
+                                    })
+                            }
+                        })
+                        .catch(err => {
+                            // An error occurred
+                        })
         },
         async handleSearch() {
             let data = {

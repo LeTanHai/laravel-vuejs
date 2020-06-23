@@ -25,5 +25,11 @@ return [
         ],
         'error_all' => 'Check red fields !',
         'required' => 'Check required fields !'
+    ],
+    'modal_delete' => [
+        'content' => 'Confirm that, record will delete',
+        'title' => 'Do you want to delete?',
+        'btn_ok' => 'Yes',
+        'btn_no' => 'No'
     ]
 ];
