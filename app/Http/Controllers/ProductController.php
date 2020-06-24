@@ -44,6 +44,18 @@ class ProductController extends Controller
                     $list = $objTmp;
                 }
                 return response()->json($list);
+            case "slide_bar":
+                $product = Product::where('user_id', Auth::user()->id)
+                            ->get();
+                foreach($product as $item) {                    
+                    $objTmp = new \stdClass;
+                    $objTmp->id = $item->id;
+                    $objTmp->name = $item->name;
+                    $objTmp->code = $item->code;
+                    $objTmp->user_id = $item->user_id;
+                    $list[] = $objTmp;
+                }
+                return response()->json($list);
             case "view":
                 $item = Product::find($request->id);                  
                 $objTmp = new \stdClass;

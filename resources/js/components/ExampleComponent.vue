@@ -3,7 +3,14 @@
         <b-container fluid>
             <div class="row justify-content-center">
                 <div class="mt-3 col-md-12">
-                    <progress_bar :dataInit="data"></progress_bar>
+                    <b-row>
+                        <b-col class="slide-bar" cols="2">
+                            <slide_bar_product :data_init="slide_init" @re-render="reRender"></slide_bar_product>
+                        </b-col>
+                        <b-col cols="10">
+                            <progress_bar :dataInit="data"></progress_bar>
+                        </b-col>
+                    </b-row>
                     <div class="card">
                         <div class="card-header" style="width: 100%; height: 40px;"> Google API </div>
                         <div class="card-body">
@@ -60,6 +67,14 @@
                 default() {
                     return {}
                 }
+            },
+            slide_init: {
+                type: [Array, Object],
+                default() {
+                    return {
+                        name: "Ordered Products"
+                    }
+                }
             }
         },
         methods: {
@@ -113,6 +128,7 @@
                     .then(response=> {
                         this.location_item = _.clone(response.data, true)
                         console.log("Location_item:::", this.location_item)
+                        this.slide_init.name = this.location_item.name
                         this.data.status = this.location_item.status
                         this.data.pickup = this.location_item.pickup
                         this.code = this.location_item.code
@@ -227,6 +243,10 @@
                 this.updateStatus()
                 this.drawLine(newLocation)
             },
+            reRender(item) {
+                console.log("emit item", item);
+                this.$parent.reRender(item);
+            }
         },
         mounted() {
             this.initMap()

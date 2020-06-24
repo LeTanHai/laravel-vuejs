@@ -12,3 +12,20 @@
 .custom-table {
     min-height: 250px!important;
 }
+.b-sidebar-outer {
+    z-index: 1071;
+    position: fixed!important;
+    top: 20%;
+    left: 0;
+    right: 1100px;
+    height: 0;
+    overflow: visible;
+    margin: 0!important;
+    outline: 0;
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+}
+.slide-bar {
+    display: flex;
+    justify-content: center;
+}

@@ -49,9 +49,13 @@ Vue.component('product_modals_view', require('./components/products/modals/view.
 Vue.component('product_modals_new_edit', require('./components/products/modals/new-edit.vue').default);
 //user
 Vue.component('user_modals_combo_box', require('./components/users/modals/combo-box.vue').default);
+Vue.component('users', require('./components/users/users.vue').default);
 
 //login
 Vue.component('login_page', require('./components/pages/login.vue').default);
+
+//silde bar
+Vue.component('slide_bar_product', require('./components/slide_bar_product.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
