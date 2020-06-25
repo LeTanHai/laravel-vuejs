@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-input-group prepend="Click to Select Your Product">
+    <b-input-group prepend="Select Your Product">
         <b-input-group-append>
             <b-button v-b-toggle.sidebar-variant> {{data_init.name}} </b-button>
         </b-input-group-append>
