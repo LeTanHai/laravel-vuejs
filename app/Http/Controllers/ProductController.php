@@ -57,6 +57,7 @@ class ProductController extends Controller
                 }
                 return response()->json($list);
             case "view":
+            case "user":
                 $item = Product::find($request->id);                  
                 $objTmp = new \stdClass;
                 $objTmp->id = $item->id;

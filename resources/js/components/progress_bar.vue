@@ -38,6 +38,11 @@ export default {
             }
         }
     },
+    mounted() {
+        setTimeout(() =>{
+            this.updateProgressBar();
+        }, 1000);
+    },
     watch: {
         dataInit: {
             deep: true,
@@ -47,46 +52,44 @@ export default {
                 if (this.data.code != this.data.code_current) {
                     return;
                 }
-                console.log(this.data)
-                if (this.data.pickup == 0 && this.data.status == 2) {
-                    console.log("Delivered")
-                    this.step1Class = this.list_status[this.data.status]
-                    this.step2Class = this.list_status[this.data.status]
-                    this.step3Class = this.list_status[this.data.status]
-                    return;
-                }
-                else if (this.data.pickup == 0) {
-                    console.log("not pickup")
-                    this.data.status = 0
-                    this.step1Class= ""
-                    this.step2Class= ""
-                    this.step3Class= ""
-                    return;
-                }
-                
-                switch(this.data.status){
-                    case 0:
-                        console.log("Picking up")
-                        this.step1Class = this.list_status[parseInt(this.data.status) + 1] 
-                        this.step2Class = this.list_status[this.data.status]
-                        this.step3Class = this.list_status[this.data.status]
-                        break;
-                    case 1:
-                        console.log("Shipping")
-                        console.log(this.data.status + 1)
-                        this.step1Class = this.list_status[parseInt(this.data.status) + 1] 
-                        this.step2Class = this.list_status[this.data.status]
-                        this.step3Class = this.list_status[parseInt(this.data.status) - 1]
-                        break;
-                    case 2:
-                        console.log("Delivered")
-                        this.step1Class = this.list_status[this.data.status]
-                        this.step2Class = this.list_status[this.data.status]
-                        this.step3Class = this.list_status[parseInt(this.data.status) - 1]
-                        break;
-                }
+                this.updateProgressBar();
             }
         },
+    },
+    methods: {
+        updateProgressBar() {
+            if (this.data.pickup == 0 && this.data.status == 2) {
+                this.step1Class = this.list_status[this.data.status]
+                this.step2Class = this.list_status[this.data.status]
+                this.step3Class = this.list_status[this.data.status]
+                return;
+            }
+            else if (this.data.pickup == 0) {
+                this.data.status = 0
+                this.step1Class= ""
+                this.step2Class= ""
+                this.step3Class= ""
+                return;
+            }
+            
+            switch(this.data.status){
+                case 0:
+                    this.step1Class = this.list_status[parseInt(this.data.status) + 1] 
+                    this.step2Class = this.list_status[this.data.status]
+                    this.step3Class = this.list_status[this.data.status]
+                    break;
+                case 1:
+                    this.step1Class = this.list_status[parseInt(this.data.status) + 1] 
+                    this.step2Class = this.list_status[this.data.status]
+                    this.step3Class = this.list_status[parseInt(this.data.status) - 1]
+                    break;
+                case 2:
+                    this.step1Class = this.list_status[this.data.status]
+                    this.step2Class = this.list_status[this.data.status]
+                    this.step3Class = this.list_status[parseInt(this.data.status) - 1]
+                    break;
+            }
+        }
     }
 }
 </script>

@@ -22,7 +22,7 @@ export default {
     methods: {
         reRender(objInit) {
             this.data_init.id = objInit.id;
-            this.data_init.type = 'view';
+            this.data_init.type = 'user';
             this.index = 1 - this.index;
         }
     }

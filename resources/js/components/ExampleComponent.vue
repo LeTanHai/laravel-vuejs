@@ -4,12 +4,19 @@
             <div class="row justify-content-center">
                 <div class="mt-3 col-md-12">
                     <b-row>
-                        <b-col class="slide-bar" cols="4">
-                            <slide_bar_product :data_init="slide_init" @re-render="reRender"></slide_bar_product>
-                        </b-col>
-                        <b-col cols="8">
-                            <progress_bar :dataInit="data"></progress_bar>
-                        </b-col>
+                        <template v-if="data_init.type != 'view'">
+                            <b-col class="slide-bar" cols="4">
+                                <slide_bar_product :data_init="slide_init" @re-render="reRender"></slide_bar_product>
+                            </b-col>
+                            <b-col cols="8">
+                                <progress_bar ref="progress_bar" :dataInit="data"></progress_bar>
+                            </b-col>
+                        </template>
+                        <template v-else>
+                            <b-col cols="12">
+                                <progress_bar ref="progress_bar" :dataInit="data"></progress_bar>
+                            </b-col>
+                        </template>
                     </b-row>
                     <div class="card">
                         <div class="card-header" style="width: 100%; height: 40px;"> Google API </div>
@@ -132,6 +139,7 @@
                         this.slide_init.name = this.location_item.name
                         this.data.status = this.location_item.status
                         this.data.pickup = this.location_item.pickup
+                        this.$refs["progress_bar"].updateProgressBar();
                         this.data.code_current = this.location_item.code
                         this.code = this.location_item.code
                         this.lineCoordinates.push(this.location_item.origin)
