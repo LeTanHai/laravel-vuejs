@@ -1,6 +1,10 @@
 <template>
   <div>
-    <b-button v-b-toggle.sidebar-variant> {{data_init.name}} </b-button>
+    <b-input-group prepend="Select Your Product">
+        <b-input-group-append>
+            <b-button v-b-toggle.sidebar-variant> {{data_init.name}} </b-button>
+        </b-input-group-append>
+    </b-input-group>
     <b-sidebar id="sidebar-variant" shadow>
         <div class="px-3 py-2">
             <b-table striped hover :fields="fields" :items="listProduct" @row-clicked="clickProduct"></b-table>

@@ -4,10 +4,10 @@
             <div class="row justify-content-center">
                 <div class="mt-3 col-md-12">
                     <b-row>
-                        <b-col class="slide-bar" cols="2">
+                        <b-col class="slide-bar" cols="4">
                             <slide_bar_product :data_init="slide_init" @re-render="reRender"></slide_bar_product>
                         </b-col>
-                        <b-col cols="10">
+                        <b-col cols="8">
                             <progress_bar :dataInit="data"></progress_bar>
                         </b-col>
                     </b-row>
@@ -49,7 +49,8 @@
                 data: {
                     status: null,
                     pickup: null,
-                    code: null
+                    code: null,
+                    code_current: null
                 },
                 dataUpdateLocation: {},
                 visible_marker: false,
@@ -72,7 +73,7 @@
                 type: [Array, Object],
                 default() {
                     return {
-                        name: "Ordered Products"
+                        name: "Loading..."
                     }
                 }
             }
@@ -131,6 +132,7 @@
                         this.slide_init.name = this.location_item.name
                         this.data.status = this.location_item.status
                         this.data.pickup = this.location_item.pickup
+                        this.data.code_current = this.location_item.code
                         this.code = this.location_item.code
                         this.lineCoordinates.push(this.location_item.origin)
                         this.map = new google.maps.Map(document.getElementById('api-maps'), {

@@ -24,7 +24,9 @@ export default {
             step3Class: "",
             data: {
                 status: null,
-                pickup: null
+                pickup: null,
+                code: null,
+                code_current: null
             }   
         }
     },
@@ -42,6 +44,9 @@ export default {
             immediate: true,
             handler(newData, oldData) {
                 _.extend(this.data, newData)
+                if (this.data.code != this.data.code_current) {
+                    return;
+                }
                 console.log(this.data)
                 if (this.data.pickup == 0 && this.data.status == 2) {
                     console.log("Delivered")
