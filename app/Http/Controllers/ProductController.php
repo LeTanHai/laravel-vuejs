@@ -85,10 +85,7 @@ class ProductController extends Controller
                                 ->where('email', 'like', "%{$request->keySearch}%")
                                 ->orWhere('products.name', 'like', "%{$request->keySearch}%")
                                 ->orWhere('products.code', 'like', "%{$request->keySearch}%")
-                                ->orWhere('products.status', 'like', "%{$request->keySearch}%")
-                                ->where( function($query) use($request) {
-                                    $query->whereBetween('products.created_at', [date($request->from_date), date($request->to_date)]);
-                                });
+                                ->orWhere('products.status', 'like', "%{$request->keySearch}%");
                 $totalRecord = $product->count();
                 if ($request->limit == "*") {
                     $listProduct = $product->offset(0);
