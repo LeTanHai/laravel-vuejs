@@ -143,7 +143,7 @@
                         this.lineCoordinates.push(this.location_item.origin)
                         this.map = new google.maps.Map(document.getElementById('api-maps'), {
                             center: this.location_item.origin,
-                            zoom: 50
+                            zoom: 20
                         })
                         this.marker = new google.maps.Marker({
                             map: this.map,
