@@ -115,7 +115,6 @@
                 axios
                     .get('/product', {params: this.action})
                     .then(response=>{
-                        console.log("getProduct::::",response.data)
                         this.data.code = response.data.code;
                     })
                     .catch(err => {
@@ -135,7 +134,6 @@
                     .get('/product', {params: this.action})
                     .then(response=> {
                         this.location_item = _.clone(response.data, true)
-                        console.log("Location_item:::", this.location_item)
                         this.slide_init.name = this.location_item.name
                         this.data.status = this.location_item.status
                         this.data.pickup = this.location_item.pickup
@@ -145,7 +143,7 @@
                         this.lineCoordinates.push(this.location_item.origin)
                         this.map = new google.maps.Map(document.getElementById('api-maps'), {
                             center: this.location_item.origin,
-                            zoom: 8
+                            zoom: 50
                         })
                         this.marker = new google.maps.Marker({
                             map: this.map,
@@ -182,8 +180,6 @@
                 return (google.maps.geometry.spherical.computeDistanceBetween(p1, p2) / 1000).toFixed(2);
             },
             updateStatus() {
-                console.log("Code::::",this.data.code);
-                console.log("Action:::", this.action.type);
                 if (this.data.code == null) {
                     return;
                 }
@@ -202,7 +198,6 @@
                 }
                 this.dataUpdateLocation.location_new = this.location.lat + ',' + this.location.lng
                 this.dataUpdateLocation.code = this.data.code
-                console.log("User_id:::::", this.dataUpdateLocation.code);
                 axios
                     .post('/locationProduct', this.dataUpdateLocation)
                     .then(response => {
@@ -218,14 +213,14 @@
                     this.newLocation.setPosition(newLocation)
                     this.newLocation.setVisible(this.visible_marker)
                     this.lineCoordinates.push(new google.maps.LatLng(newLocation.lat, newLocation.lng))
-                    var lineCoordinatesPath = new google.maps.Polyline({
-                        path: this.lineCoordinates,
-                        geodesic: true,
-                        map: this.map,
-                        strokeColor: '#FF0000',
-                        strokeOpacity: 1.0,
-                        strokeWeight: 2
-                    })
+                    // var lineCoordinatesPath = new google.maps.Polyline({
+                    //     path: this.lineCoordinates,
+                    //     geodesic: true,
+                    //     map: this.map,
+                    //     strokeColor: '#FF0000',
+                    //     strokeOpacity: 0.5,
+                    //     strokeWeight: 5
+                    // })
                 }
             }, 
             updateMap() {
@@ -254,7 +249,6 @@
                 this.drawLine(newLocation)
             },
             reRender(item) {
-                console.log("emit item", item);
                 this.$parent.reRender(item);
             }
         },
@@ -264,6 +258,7 @@
         created() {
             Echo.channel('location')
                 .listen('SendLocation', (event) => {
+                    console.log(event.location);
                     this.location = event.location.location
                     this.pickup = event.location.pickup
                     this.data.code = event.location.code

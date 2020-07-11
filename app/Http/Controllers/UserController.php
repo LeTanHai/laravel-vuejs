@@ -10,7 +10,7 @@ class UserController extends Controller
     public function search(Request $request) {
         switch ($request->type) {
             case "combo_box":
-                $user = User::select('users.*', 'locations.origin', 'locations.id as location_id')
+                $user = User::select('users.*', 'locations.destination', 'locations.id as location_id')
                             ->leftJoin('locations', 'users.id', '=', 'locations.user_id')
                             ->where('users.name', 'like', "%{$request->keySearch}%")
                             ->orWhere('users.email', 'like', "%{$request->keySearch}%")
@@ -20,7 +20,7 @@ class UserController extends Controller
                     $tmp->id = $item["id"];
                     $tmp->name = $item["name"];
                     $tmp->email = $item["email"];
-                    $tmp->origin = $item["origin"];
+                    $tmp->destination = $item["destination"];
                     $tmp->location_id = $item["location_id"];
                     $listData[] = $tmp;
                     return $listData;

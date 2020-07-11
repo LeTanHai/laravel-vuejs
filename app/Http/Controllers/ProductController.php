@@ -85,7 +85,10 @@ class ProductController extends Controller
                                 ->where('email', 'like', "%{$request->keySearch}%")
                                 ->orWhere('products.name', 'like', "%{$request->keySearch}%")
                                 ->orWhere('products.code', 'like', "%{$request->keySearch}%")
-                                ->orWhere('products.status', 'like', "%{$request->keySearch}%");
+                                ->orWhere('products.status', 'like', "%{$request->keySearch}%")
+                                ->where( function($query) use($request) {
+                                    $query->whereBetween('products.created_at', [date($request->from_date), date($request->to_date)]);
+                                });
                 $totalRecord = $product->count();
                 if ($request->limit == "*") {
                     $listProduct = $product->offset(0);
@@ -126,7 +129,9 @@ class ProductController extends Controller
                     $list[] = $objTmp;
                 }
                 return response()->json(["listProduct" => $list,
-                                        "totalRecord" => $totalRecord]);
+                                        "totalRecord" => $totalRecord,
+                                        "from_date" => $request->from_date,
+                                        "to_date"=> $request->to_date]);
         }
     }
 
@@ -213,10 +218,6 @@ class ProductController extends Controller
         $product = Product::where('code',$request->code)->get();
         $product[0]->status = $request->status;
         $product[0]->pickup = $request->pickup;
-        // if ($request->status === 2 && $request->pickup === 0) {
-        //     //event(new OrderShipped($request->status));
-        //     Mail::to(Auth::user()->email)->send(new OrderShipped($request->status));
-        // }
         return response()->json(["product" => $product,
                                 "status" => $product[0]->save(),
                                 "number" => 201]);
@@ -233,5 +234,27 @@ class ProductController extends Controller
         return response()->json(["product" => $product,
                                 "status" => $product[0]->save(),
                                 "number" => 201]);
+    }
+
+    public function sendMail(Request $request) {
+        try {
+            $product = Product::where('code', $request->code)->get();
+            $user_email = $product[0]->user->email;
+            $data = array('name'=>"ABCD");
+            // Path or name to the blade template to be rendered
+            $template_path = 'email_template';
+
+            Mail::send($template_path, $data, function($message) {
+                // Set the receiver and subject of the mail.
+                $message->to('letanhai.lth@gmail.com', 'Receiver Name')->subject('TEST SEND MAIL');
+                // Set the sender
+                $message->from('ims_merchandise@outlook.com.vn','Our Code World');
+            });
+            return response()->json(["statusSendMail" => 'yes']);
+        }
+        catch(Exception $e) {
+            return response()->json(["statusSendMail" => 'faild']);
+        }
+        
     }
 }

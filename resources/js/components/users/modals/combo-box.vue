@@ -100,7 +100,6 @@ export default {
         },
         clickRow(item) {
             this.selected = _.clone(item, true);
-            console.log(this.selected);
             this.dataCallBack.data = _.clone(this.selected);
             this.dataCallBack.action = "selected_user"
             this.$refs["user_modal_combo_box"].hide();

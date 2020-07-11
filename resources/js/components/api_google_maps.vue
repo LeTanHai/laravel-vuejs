@@ -68,10 +68,8 @@ export default {
             axios
                 .get('/location')
                 .then(response =>{
-                    console.log(response)
                     this.location.origin = response.data.origin
                     this.location.destination = response.data.destination
-                    console.log(this.location)
                 })
                 .catch(errror =>{
                     console.log(error)
@@ -87,7 +85,6 @@ export default {
         },
         clickMaps() {
             // esp post location vào database 1s/lần
-            // nếu origin != destination => vào controller cập nhật lại location 1s/lần
             return this.url + "&origin=" + this.location.origin + "&destination=" + this.location.destination
         }
     }

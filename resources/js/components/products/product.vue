@@ -14,6 +14,28 @@
                     </b-form-select>
                 </div>
             </b-col>
+            <!-- <b-col cols="5">
+                <b-row>
+                    <b-col cols="6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> From</span>
+                            </div>
+                            <b-form-input class="form-control" type="date" v-model="filter.from_date">
+                            </b-form-input>
+                        </div>
+                    </b-col>
+                    <b-col cols="6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> To</span>
+                            </div>
+                            <b-form-input class="form-control" type="date" v-model="filter.to_date">
+                            </b-form-input>
+                        </div>
+                    </b-col>
+                </b-row>
+            </b-col> -->
             <b-col cols="5">
                 <div class="input-group">
                     <div class="input-group-prepend">
@@ -28,15 +50,15 @@
                     </div>
                 </div>
             </b-col>
-            <b-col cols="5">
+            <b-col cols="2">
                 <b-button right @click.prevent="handleNew"> {{$t('users.btn.new')}} </b-button>
             </b-col>
         </b-row>
         <b-row class="mt-3">
             <b-col class="custom-table" md="12">
                 <b-table  
-                    striped hover 
-                    sticky-header
+                    striped hover
+                    stacked 
                     head-variant="primary"
                     small
                     :items="items" 
@@ -82,6 +104,8 @@ export default {
         return {
             filter: {
                 keySearch: "",
+                from_date: "",
+                to_date: ""
             },
             limit: {
                 selected: "*",
@@ -140,6 +164,8 @@ export default {
         }
     },
     created() {
+        this.filter.from_date = new Date().toJSON().slice(0,10);
+        this.filter.to_date = new Date(Date.now() + 6.048e+8).toJSON().slice(0,10);
         this.handleSearch();
     },
     computed: {
@@ -171,12 +197,13 @@ export default {
             })
         },
         async handleSearch(event) {
-            console.log("Search User");
             this.items = _.clone([], true);
             if (typeof event === "undefined") {
                     this.currentPage = 1;
                 }
             let data = {
+                from_date : this.filter.from_date,
+                to_date: this.filter.to_date,
                 keySearch: this.filter.keySearch,
                 type: "admin",
                 currentPage: this.currentPage,
@@ -188,7 +215,6 @@ export default {
         },
         clickPagination(event) {
             this.currentPage = event;
-            console.log("current page:::",this.currentPage);
             this.handleSearch(event);
         },
         clickSelectLimit() {

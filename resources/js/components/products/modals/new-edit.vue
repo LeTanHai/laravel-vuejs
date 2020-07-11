@@ -243,7 +243,6 @@ export default {
                     this.error_messages.all_error = "";
                     return this.$refs["product_modal_new"].show();
                 case "Edit":
-                    console.log(this.objInit)
                     let data = {
                         type: 'view',
                         id: this.objInit.id
@@ -385,7 +384,7 @@ export default {
                     this.fields_values.user_id = objInit.data.id;
                     this.fields_values.location_id = objInit.data.location_id;
                     this.click_selected.user_name = objInit.data.name;
-                    this.click_selected.address = objInit.data.origin;
+                    this.click_selected.address = objInit.data.destination;
                     break;
             }
         }
