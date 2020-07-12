@@ -240,12 +240,12 @@ class ProductController extends Controller
             $data = array('name'=>"ABCD");
             // Path or name to the blade template to be rendered
             $template_path = 'email_template';
-
-            Mail::send($template_path, $data, function($message) {
+            $content = 'Your items delivered';
+            Mail::send($template_path, $data, function($message) use ($user_email, $content) {
                 // Set the receiver and subject of the mail.
-                $message->to('letanhai.lth@gmail.com', 'Receiver Name')->subject('TEST SEND MAIL');
+                $message->to($user_email, 'Receiver Name')->subject('TEST SEND MAIL');
                 // Set the sender
-                $message->from('ims_merchandise@outlook.com.vn','Our Code World');
+                $message->from('ims_merchandise@outlook.com.vn',"{$content}");
             });
             return response()->json(["statusSendMail" => 'yes']);
         }

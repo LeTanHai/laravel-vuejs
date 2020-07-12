@@ -36,6 +36,8 @@
             return {
                 map: null,
                 marker: null,
+                directionsRenderer: new google.maps.DirectionsRenderer({suppressMarkers: true}),
+                directionsService: new google.maps.DirectionsService(),
                 location: {},
                 lineCoordinates: [],
                 location_item: {
@@ -66,7 +68,18 @@
                     type: this.data_init.type || "none"
                 },
                 code: null,
-                pickup: null
+                pickup: null,
+                icons: {
+                    start: {
+                        url: "http://maps.google.com/mapfiles/kml/paddle/grn-circle.png", // url
+                        scaledSize: new google.maps.Size(40, 40), // scaled size
+                    },
+                    end: {
+                        url: "http://maps.google.com/mapfiles/kml/paddle/red-stars.png", // url
+                        scaledSize: new google.maps.Size(40, 40), // scaled size
+                    }
+                },
+                marker_array: []
             }
         },
         props: {
@@ -86,30 +99,54 @@
             }
         },
         methods: {
-            calculateAndDisplayRoute(directionsService, directionsRenderer) {
-                directionsService.route({
-                    origin: {lat: 37.77, lng: -122.447},  // Haight.
-                    destination: {lat: 37.768, lng: -122.511},  // Ocean Beach.
-                    travelMode: 'DRIVING'
-                    }, function(response, status) {
-                    if (status == 'OK') {
-                        directionsRenderer.setDirections(response);
-                    } else {
-                        window.alert('Directions request failed due to ' + status);
-                    }
-                })
+            makeMarker( position, icon, title , visible) {
+                this.marker_array.push(new google.maps.Marker({
+                    position: position,
+                    map: this.map,
+                    icon: icon,
+                    title: title,
+                    visible: visible
+                }));
             },
-            addMarker(location, map) {
-                var icon = {
-                    url: "http://maps.google.com/mapfiles/kml/paddle/red-stars.png", // url
-                    scaledSize: new google.maps.Size(40, 40), // scaled size
-                };
-                var marker = new google.maps.Marker({
-                position: location,
-                map: map,
-                icon: icon,
-                draggable:true
-                });
+            clearMarkers() {
+                for (var i = 0; i < this.marker_array.length-1; i++) {
+                    this.marker_array[i].setMap(null);
+                }
+            },
+            calculateAndDisplayRoute(directionsService, directionsRenderer, origin, destination) {
+                let that = this;
+                directionsService.route(
+                    {
+                        origin: {
+                            lat: origin.lat,
+                            lng: origin.lng
+                        },
+                        destination: {
+                            lat: destination.lat,
+                            lng: destination.lng
+                        },
+                        travelMode: google.maps.TravelMode["DRIVING"]
+                    },
+                    function(response, status) {
+                        if (status == "OK") {
+                            directionsRenderer.setDirections(response);
+                            let leg = response.routes[0].legs[0];
+                            var location_tmp = {
+                                lat: leg.start_location.lat(),
+                                lng: leg.start_location.lng()
+                            }
+                            if (that.calcDistance(location_tmp, that.location_item.origin) == 1.41) {
+                                that.makeMarker( leg.start_location, that.icons.start, "origin" , false);
+                            }
+                            else {
+                                that.makeMarker( leg.start_location, that.icons.start, "shipping" , true);
+                            }
+                            that.makeMarker( leg.end_location, that.icons.end, "destination", true);
+                        } else {
+                            window.alert("Directions request failed due to " + status);
+                        }
+                    }
+                );
             },
             getCodeProduct() {
                 axios
@@ -145,19 +182,15 @@
                             center: this.location_item.origin,
                             zoom: 20
                         })
+                        this.directionsRenderer.setMap(this.map);
+                        this.calculateAndDisplayRoute(this.directionsService, this.directionsRenderer, 
+                                                        this.location_item.origin, this.location_item.destination);
                         this.marker = new google.maps.Marker({
                             map: this.map,
                             position: this.location_item.origin,
                             animation: "bounce",
                             icon: icon
                         })
-                        this.newLocation = new google.maps.Marker({
-                            map: this.map,
-                            position: this.location_item.location_new,
-                            icon: icon_location_new,
-                            visible: this.visible_marker
-                        })
-                        this.addMarker(this.location_item.destination, this.map)
                         if (this.calcDistance(this.location_item.origin, this.location_item.location_new) == 0){
                             this.location = this.location_item.origin
                             this.visible_marker = false
@@ -209,18 +242,10 @@
             },
             drawLine(newLocation) {
                 if (this.data.code == null || this.data.code == this.code) {
-                    this.map.setCenter(newLocation)
-                    this.newLocation.setPosition(newLocation)
-                    this.newLocation.setVisible(this.visible_marker)
-                    this.lineCoordinates.push(new google.maps.LatLng(newLocation.lat, newLocation.lng))
-                    // var lineCoordinatesPath = new google.maps.Polyline({
-                    //     path: this.lineCoordinates,
-                    //     geodesic: true,
-                    //     map: this.map,
-                    //     strokeColor: '#FF0000',
-                    //     strokeOpacity: 0.5,
-                    //     strokeWeight: 5
-                    // })
+                    // this.map.setCenter(newLocation)
+                    this.clearMarkers();
+                    this.calculateAndDisplayRoute(this.directionsService, this.directionsRenderer, 
+                                                        newLocation, this.location_item.destination);
                 }
             }, 
             updateMap() {
@@ -258,7 +283,6 @@
         created() {
             Echo.channel('location')
                 .listen('SendLocation', (event) => {
-                    console.log(event.location);
                     this.location = event.location.location
                     this.pickup = event.location.pickup
                     this.data.code = event.location.code

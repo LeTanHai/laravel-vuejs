@@ -254,7 +254,6 @@ export default {
                     _.extend(this.fields_values, response.data);
                     this.click_selected.user_name = response.data.email;
                     this.handleSearch();
-                    console.log(this.fields_values);
                     return this.$refs["product_modal_new"].show();    
             }
         },
@@ -275,7 +274,6 @@ export default {
             if (this.checkValidateAllFields()) {
                 try {
                     let data = _.clone(this.fields_values, true);
-                    console.log("data::::",data);
                     data.type = "new";
                     const response = await axios.post('/newProduct', data);
                     if (response.data.error) {
@@ -291,14 +289,11 @@ export default {
             }
         },
         async handleEdit() {
-            console.log("edit");
             if (this.checkValidateAllFields()) {
                 let data = _.clone(this.fields_values, true);
-                console.log("data::::",data);
                 data.type = "edit";
                 data.id = this.objInit.id;
                 const response = await axios.post('/newProduct', data);
-                console.log(response);
             }
         },
         handleDelete() {

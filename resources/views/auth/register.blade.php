@@ -1,5 +1,24 @@
 @extends('layouts.app')
-
+<script>
+    function geocodeAddress() {
+        var geocoder = new google.maps.Geocoder();
+        var address = document.getElementById("address_tmp").value;
+        geocoder.geocode(
+        {
+            address: address
+        },
+        function(results, status) {
+            if (status === "OK") {
+                $("#address").val(results[0].geometry.location.lat()+','+results[0].geometry.location.lng());
+            } else {
+                alert(
+                    "Address invalid"
+                );
+            }
+        }
+        );
+    }
+</script>
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
@@ -43,7 +62,9 @@
                             <label for="address" class="col-md-4 col-form-label text-md-right">Address</label>
 
                             <div class="col-md-6">
-                                <input id="address" type="text" class="form-control @error('name') is-invalid @enderror" name="address" value="{{ old('address') }}" required autocomplete="name">
+                                <input id="address_tmp" onblur="geocodeAddress()" type="text" class="form-control @error('name') is-invalid @enderror" name="address_tmp" value="{{ old('address_tmp') }}" required autocomplete="name">
+
+                                <input id="address" type="hidden" class="form-control @error('name') is-invalid @enderror" name="address" value="{{ old('address') }}" required autocomplete="name">
 
                                 @error('name')
                                     <span class="invalid-feedback" role="alert">

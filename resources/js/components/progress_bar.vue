@@ -28,7 +28,7 @@ export default {
                 code: null,
                 code_current: null
             },
-            checkSendMail: 'no'   
+            // checkSendMail: 'no'   
         }
     },
     props: {
@@ -41,9 +41,9 @@ export default {
     },
     mounted() {
         setTimeout(() =>{
-            if (this.data.status == 2) {
-                this.checkSendMail = "yes";
-            }
+            // if (this.data.status == 2) {
+            //     this.checkSendMail = "yes";
+            // }
             this.updateProgressBar();
         }, 1000);
     },
@@ -62,19 +62,19 @@ export default {
     },
     methods: {
         async updateProgressBar() {
-            if (this.data.pickup == 1 && this.data.status == 2 && this.checkSendMail == "no") {
-                try {
-                    console.log("send maill....")
-                    let data = {
-                        code: this.data.code
-                    }
-                    const response = await axios.get('/sendMail', {params:data});
-                    this.checkSendMail = response.data.statusSendMail;
-                }
-                catch($err) {
-                    console.log($err)
-                }                
-            }
+            // if (this.data.pickup == 1 && this.data.status == 2 && this.checkSendMail == "no") {
+            //     try {
+            //         console.log("send maill....")
+            //         let data = {
+            //             code: this.data.code
+            //         }
+            //         const response = await axios.get('/sendMail', {params:data});
+            //         this.checkSendMail = response.data.statusSendMail;
+            //     }
+            //     catch($err) {
+            //         console.log($err)
+            //     }                
+            // }
             if (this.data.pickup == 0 && this.data.status == 2) {
                 this.step1Class = this.list_status[this.data.status]
                 this.step2Class = this.list_status[this.data.status]
