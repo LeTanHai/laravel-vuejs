@@ -247,10 +247,10 @@ class ProductController extends Controller
                 // Set the sender
                 $message->from('ims_merchandise@outlook.com.vn',"{$content}");
             });
-            return response()->json(["statusSendMail" => 'yes']);
+            return response()->json($product);
         }
         catch(Exception $e) {
-            return response()->json(["statusSendMail" => 'faild']);
+            return response()->json($product);
         }
         
     }
