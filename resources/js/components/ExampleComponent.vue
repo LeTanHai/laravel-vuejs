@@ -260,7 +260,7 @@
                     this.drawLine(newLocation)
                     return;
                 }
-                if(this.calcDistance(newLocation, this.location_item.destination) < 0.1 || this.data.status == 2) {
+                if (this.calcDistance(newLocation, this.location_item.destination) < 0.1 || this.data.status == 2) {
                     this.data.status = 2
                     this.visible_marker = false
                     this.updateStatus()

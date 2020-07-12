@@ -28,7 +28,7 @@ export default {
                 code: null,
                 code_current: null
             },
-            // checkSendMail: 'no'   
+            checkSendMail: 'no'   
         }
     },
     props: {

@@ -31,6 +31,11 @@ Route::post('/map', function (Request $request) {
     return response()->json(['status' => 'success', 'data' => $location]);
 });
 
+// send mail
+
+Route::post('/sendMail', 'ProductController@sendMail');
+
+
 Route::get('/product', 'ProductController@getProduct');
 
 Route::post('/settingOriginGPS', 'LocationController@updateOriginLocation');
