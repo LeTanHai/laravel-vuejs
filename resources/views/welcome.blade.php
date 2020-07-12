@@ -96,7 +96,7 @@ if (Auth::check()) {
             @endif
 
             <div class="content">
-                <img src="./images/logo_lvtn.png" style="width:65%;height:100%;>
+                <img src="./images/eProjects-website.png" style="width:65%;height:100%;>
             </div>
         </div>
         <script src="{{asset('js/app.js')}}"></script>

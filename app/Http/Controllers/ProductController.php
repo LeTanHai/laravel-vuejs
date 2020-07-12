@@ -228,6 +228,34 @@ class ProductController extends Controller
     public function updateLocationProduct(Request $request) {
         $product = Product::where('code', $request->code)->get();
         $product[0]->location_new = $request->location_new;
+        $description = $product->description;
+        //send mail.....
+        $status = $product->status;
+        $user_email = $product[0]->user->email;
+        $data = array('name'=>"ABCD");
+        // Path or name to the blade template to be rendered
+        $template_path = 'email_template';
+        $content = 'Your items delivered';
+        if ($status == 1 && !$description === "shipping") {
+            Mail::send($template_path, $data, function($message) use ($user_email, $content) {
+                $message->to($user_email, 'Receiver Name')->subject('Orders are being delivered');
+                $message->from('ims_merchandise@outlook.com.vn',"{$content}");
+            });
+            $product[0]->description = "shipping";
+            return response()->json(["product" => $product,
+                                "status" => $product[0]->save(),
+                                "number" => 201]);
+        }
+        if ($status == 2 && !$description === "delivered") {
+            Mail::send($template_path, $data, function($message) use ($user_email, $content) {
+                $message->to($user_email, 'Receiver Name')->subject('Orders has been shipped');
+                $message->from('ims_merchandise@outlook.com.vn',"{$content}");
+            });
+            $product[0]->description = "delivered";
+            return response()->json(["product" => $product,
+                                "status" => $product[0]->save(),
+                                "number" => 201]);
+        }
         return response()->json(["product" => $product,
                                 "status" => $product[0]->save(),
                                 "number" => 201]);
