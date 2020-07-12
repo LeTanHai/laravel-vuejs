@@ -143,7 +143,7 @@
                             }
                             that.makeMarker( leg.end_location, that.icons.end, "destination", true);
                         } else {
-                            window.alert("Directions request failed due to " + status);
+                            // window.alert("Directions request failed due to " + status);
                         }
                     }
                 );
