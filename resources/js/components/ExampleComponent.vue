@@ -135,7 +135,7 @@
                                 lat: leg.start_location.lat(),
                                 lng: leg.start_location.lng()
                             }
-                            if (that.calcDistance(location_tmp, that.location_item.origin) == 1.41) {
+                            if (that.calcDistance(location_tmp, that.location_item.origin) == 0) {
                                 that.makeMarker( leg.start_location, that.icons.start, "origin" , false);
                             }
                             else {
