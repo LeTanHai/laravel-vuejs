@@ -283,6 +283,7 @@
         created() {
             Echo.channel('location')
                 .listen('SendLocation', (event) => {
+                    console.log(event);
                     this.location = event.location.location
                     this.pickup = event.location.pickup
                     this.data.code = event.location.code
