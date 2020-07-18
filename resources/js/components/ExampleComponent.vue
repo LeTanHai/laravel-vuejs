@@ -243,7 +243,6 @@
             drawLine(newLocation) {
                 if (this.data.code == null || this.data.code == this.code) {
                     this.map = new google.maps.Map(document.getElementById('api-maps'), {
-                            center: newLocation,
                             zoom: 20
                         })
                     this.directionsRenderer.setMap(this.map);
