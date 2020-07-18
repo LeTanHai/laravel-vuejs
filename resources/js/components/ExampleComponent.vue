@@ -242,6 +242,7 @@
             },
             drawLine(newLocation) {
                 if (this.data.code == null || this.data.code == this.code) {
+                    this.map.setCenter(newLocation);
                     this.map.setZoom(20);
                     this.clearMarkers();
                     this.calculateAndDisplayRoute(this.directionsService, this.directionsRenderer, 
