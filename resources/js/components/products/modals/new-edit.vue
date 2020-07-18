@@ -113,8 +113,8 @@
                 <b-button class="text-right" right @click.prevent="handlenew"> Save </b-button>
             </template>
             <template v-else>
-                <b-button class="text-right" @click.prevent="handleEdit"> Save </b-button>
-                <b-button class="text-right" @click.prevent="handleDelete"> Delete </b-button>
+                <b-button class="ml-1 float-right" @click.prevent="handleEdit"> Save </b-button>
+                <b-button class="float-right" @click.prevent="handleDelete"> Delete </b-button>
             </template>
         </b-modal>
         <user_modals_combo_box ref="user_modals_combo_box"></user_modals_combo_box>

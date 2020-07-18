@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'InventoryManagement'),
+    'name' => env('APP_NAME', 'Real Time Transportation Management Systems'),
 
     /*
     |--------------------------------------------------------------------------

@@ -2,8 +2,8 @@
 
 return [
     'admin_login' => [
-        "app_name1" => "IMS",
-        "app_name2" => "merchandise",
+        "app_name1" => "RealTime",
+        "app_name2" => "TMS",
         "lang_en" => "English",
         "lang_ja" => "Japanese",
         "title" => "EMR System Reservations",
