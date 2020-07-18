@@ -242,8 +242,11 @@
             },
             drawLine(newLocation) {
                 if (this.data.code == null || this.data.code == this.code) {
-                    this.map.setCenter(newLocation);
-                    this.map.setZoom(20);
+                    this.map = new google.maps.Map(document.getElementById('api-maps'), {
+                            center: newLocation,
+                            zoom: 20
+                        })
+                    this.directionsRenderer.setMap(this.map);
                     this.clearMarkers();
                     this.calculateAndDisplayRoute(this.directionsService, this.directionsRenderer, 
                                                         newLocation, this.location_item.destination);
