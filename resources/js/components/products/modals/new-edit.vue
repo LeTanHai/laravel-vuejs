@@ -279,7 +279,7 @@ export default {
                     if (response.data.error) {
                         return this.error_messages.all_error = response.data.error;
                     }
-                    this.$refs["product_modal_new"].hide();
+                    this.$refs['product_modal_new'].hide();
                     this.callBack();
                 }
                 catch(error) {

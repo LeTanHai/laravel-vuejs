@@ -14,28 +14,6 @@
                     </b-form-select>
                 </div>
             </b-col>
-            <!-- <b-col cols="5">
-                <b-row>
-                    <b-col cols="6">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"> From</span>
-                            </div>
-                            <b-form-input class="form-control" type="date" v-model="filter.from_date">
-                            </b-form-input>
-                        </div>
-                    </b-col>
-                    <b-col cols="6">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"> To</span>
-                            </div>
-                            <b-form-input class="form-control" type="date" v-model="filter.to_date">
-                            </b-form-input>
-                        </div>
-                    </b-col>
-                </b-row>
-            </b-col> -->
             <b-col cols="5">
                 <div class="input-group">
                     <div class="input-group-prepend">
