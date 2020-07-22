@@ -290,10 +290,20 @@ export default {
         },
         async handleEdit() {
             if (this.checkValidateAllFields()) {
-                let data = _.clone(this.fields_values, true);
-                data.type = "edit";
-                data.id = this.objInit.id;
-                const response = await axios.post('/newProduct', data);
+                try {
+                    let data = _.clone(this.fields_values, true);
+                    data.type = "edit";
+                    data.id = this.objInit.id;
+                    const response = await axios.post('/newProduct', data);
+                    if (response.data.error) {
+                        return this.error_messages.all_error = response.data.error;
+                    }
+                    this.$refs['product_modal_new'].hide();
+                    this.callBack();
+                }
+                catch(error) {
+                    console.log(error);
+                }
             }
         },
         handleDelete() {
