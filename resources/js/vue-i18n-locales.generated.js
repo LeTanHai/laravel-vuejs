@@ -175,7 +175,8 @@ export default {
             "btn": {
                 "new": "New",
                 "btn_search": "Search",
-                "limit": "Limit"
+                "limit": "Limit",
+                "export": "Export"
             },
             "fields": {
                 "id": "ID",
