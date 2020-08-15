@@ -10,6 +10,8 @@ use App\Mail\OrderShipped;
 use Illuminate\Http\Request;
 use App\Product;
 use App\GlobalConfig;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class ProductController extends Controller
 {   
@@ -129,6 +131,8 @@ class ProductController extends Controller
                                         "totalRecord" => $totalRecord,
                                         "from_date" => $request->from_date,
                                         "to_date"=> $request->to_date]);
+            case "export":
+                return Excel::download(new ExportController($request), 'products.csv');
         }
     }
 
