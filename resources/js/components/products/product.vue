@@ -227,30 +227,7 @@ export default {
             link.setAttribute('download', 'products.xlsx'); //or any other extension
             document.body.appendChild(link);
             link.click();
-
-        //     return new Promise((resolve, reject) => {
-        //     axios({
-        //                 method: 'post',
-        //                 url: '/export', // request address
-        //                 data: data, // parameter
-        //                 responseType: 'blob', // indicates the data type returned by the return server
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     }
-        //     }).then(res => {
-        //         console.log(res)
-        //         let blob = new Blob([res.data], {
-        //         type: 'application/vnd.ms-excel'
-        //         })
-        //         let objectUrl = URL.createObjectURL(blob)
-        //         let a = document.createElement('a')
-        //         a.href = objectUrl
-        //         a.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true, view: window}))
-        //         window.URL.revokeObjectURL(blob)
-        //     }).catch(err => {
-        //     reject(err);
-        //     });
-        // })
+            this.handleSearch();
         }
     }
 }
