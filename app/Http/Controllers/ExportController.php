@@ -71,7 +71,6 @@ class ExportController extends Controller implements FromCollection,WithHeadings
             $listProduct->status = "Delivered";
         }
         return [
-            $listProduct->id,
             $listProduct->name,
             $listProduct->email,
             $listProduct->code,
