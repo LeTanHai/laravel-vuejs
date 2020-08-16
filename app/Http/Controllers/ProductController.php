@@ -239,11 +239,11 @@ class ProductController extends Controller
         $data = array('name'=>"ABCD");
         // Path or name to the blade template to be rendered
         $template_path = 'email_template';
-        $content = 'Your items delivered';
+        $content = $product[0]->name;
         if ($status == 1 && $description != "shipping") {
             Mail::send($template_path, $data, function($message) use ($user_email, $content) {
                 $message->to($user_email, 'Receiver Name')->subject('Orders are being delivered');
-                $message->from('ims_merchandise@outlook.com.vn',"{$content}");
+                $message->from('ims_merchandise@outlook.com.vn',"{$content}".' is comming!');
             });
             $product[0]->description = "shipping";
             return response()->json(["product" => $product,
@@ -253,7 +253,7 @@ class ProductController extends Controller
         if ($status == 2 && $description != "delivered") {
             Mail::send($template_path, $data, function($message) use ($user_email, $content) {
                 $message->to($user_email, 'Receiver Name')->subject('Orders has been shipped');
-                $message->from('ims_merchandise@outlook.com.vn',"{$content}");
+                $message->from('ims_merchandise@outlook.com.vn',"{$content}".' has been shipped!');
             });
             $product[0]->description = "delivered";
             return response()->json(["product" => $product,
