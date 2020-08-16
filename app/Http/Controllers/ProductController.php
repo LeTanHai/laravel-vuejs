@@ -218,6 +218,12 @@ class ProductController extends Controller
     public function updateStatus(Request $request) {
         $product = Product::where('code',$request->code)->get();
         $product[0]->status = $request->status;
+        if ($request->status == 1) {
+            $product[0]->description = "shipping";
+        }
+        else if ($request->status == 2) {
+            $product[0]->description = "delivered";
+        }
         $product[0]->pickup = $request->pickup;
         return response()->json(["product" => $product,
                                 "status" => $product[0]->save(),
