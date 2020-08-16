@@ -218,12 +218,6 @@ class ProductController extends Controller
     public function updateStatus(Request $request) {
         $product = Product::where('code',$request->code)->get();
         $product[0]->status = $request->status;
-        if ($request->status == 1) {
-            $product[0]->description = "shipping";
-        }
-        else if ($request->status == 2) {
-            $product[0]->description = "delivered";
-        }
         $product[0]->pickup = $request->pickup;
         return response()->json(["product" => $product,
                                 "status" => $product[0]->save(),
@@ -252,8 +246,8 @@ class ProductController extends Controller
                 $message->from('ims_merchandise@outlook.com.vn',"{$content}".' is comming!');
             });
             $product[0]->description = "shipping";
+            $product[0]->save();
             return response()->json(["product" => $product,
-                                "status" => $product[0]->save(),
                                 "number" => 201]);
         }
         if ($status == 2 && $description != "delivered") {
@@ -262,8 +256,8 @@ class ProductController extends Controller
                 $message->from('ims_merchandise@outlook.com.vn',"{$content}".' has been shipped!');
             });
             $product[0]->description = "delivered";
+            $product[0]->save();
             return response()->json(["product" => $product,
-                                "status" => $product[0]->save(),
                                 "number" => 201]);
         }
         return response()->json(["product" => $product,
