@@ -212,33 +212,21 @@
                 var p2 = new google.maps.LatLng(destination.lat, destination.lng);
                 return (google.maps.geometry.spherical.computeDistanceBetween(p1, p2) / 1000).toFixed(2);
             },
-            updateStatus() {
+            async updateStatus() {
                 if (this.data.code == null) {
                     return;
                 }
-                axios
-                    .post('product', this.data)
-                    .then(response =>{
-                        console.log('update status success')
-                    })
-                    .catch(err=>{
-                        console.log('update status faild ', err)
-                    })
+                const response = await axios.post('product', this.data)
+                console.log("Update status:::",response);
             },
-            updateLocation() {
+            async updateLocation() {
                 if (this.data.code == null) {
                     return;
                 }
                 this.dataUpdateLocation.location_new = this.location.lat + ',' + this.location.lng
                 this.dataUpdateLocation.code = this.data.code
-                axios
-                    .post('/locationProduct', this.dataUpdateLocation)
-                    .then(response => {
-                        console.log('update location success')
-                    })
-                    .catch(err=>{
-                        console.log('update location faild ', err)
-                    })
+                const response = await axios.post('/locationProduct', this.dataUpdateLocation)
+                console.log("UpdateLocation:::", response);
             },
             drawLine(newLocation) {
                 if (this.data.code == null || this.data.code == this.code) {

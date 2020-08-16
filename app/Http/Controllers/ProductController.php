@@ -219,6 +219,12 @@ class ProductController extends Controller
         $product = Product::where('code',$request->code)->get();
         $product[0]->status = $request->status;
         $product[0]->pickup = $request->pickup;
+        if ($request->status == 1) {
+            $product[0]->description = "shipping";
+        }
+        else if ($request->status == 2) {
+            $product[0]->description = "delivered";
+        }
         return response()->json(["product" => $product,
                                 "status" => $product[0]->save(),
                                 "number" => 201]);
@@ -259,9 +265,6 @@ class ProductController extends Controller
             return response()->json(["product" => $product,
                                 "status" => $product[0]->save(),
                                 "number" => 201]);
-        }
-        if ($status == 2) {
-            $product[0]->description = "delivered";
         }
         return response()->json(["product" => $product,
                                 "status" => $product[0]->save(),
