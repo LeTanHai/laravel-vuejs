@@ -62,6 +62,15 @@ class ExportController extends Controller implements FromCollection,WithHeadings
     }
  
     public function map($listProduct): array {
+        if ($listProduct->status == 0) {
+            $listProduct->status = "Not Pickup";
+        }
+        else if($listProduct->status == 1) {
+            $listProduct->status = "Shipping";
+        }
+        else {
+            $listProduct->status = "Delivered";
+        }
         return [
             $listProduct->id,
             $listProduct->name,
