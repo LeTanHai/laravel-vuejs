@@ -49,12 +49,11 @@ class ExportController extends Controller implements FromCollection,WithHeadings
      */
     public function headings(): array {
         return [
-            'ID',
             'Name',
             'Email',
-            'CODE',
-            'DESCRIPTON',
-            'STATUS',    
+            'Code',
+            'Description',
+            'Status',    
             "Created",
             "Updated"
             
