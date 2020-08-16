@@ -246,8 +246,8 @@ class ProductController extends Controller
                 $message->from('ims_merchandise@outlook.com.vn',"{$content}".' is comming!');
             });
             $product[0]->description = "shipping";
-            $product[0]->save();
             return response()->json(["product" => $product,
+                                "status" => $product[0]->save(),
                                 "number" => 201]);
         }
         if ($status == 2 && $description != "delivered") {
@@ -256,9 +256,12 @@ class ProductController extends Controller
                 $message->from('ims_merchandise@outlook.com.vn',"{$content}".' has been shipped!');
             });
             $product[0]->description = "delivered";
-            $product[0]->save();
             return response()->json(["product" => $product,
+                                "status" => $product[0]->save(),
                                 "number" => 201]);
+        }
+        if ($status == 2) {
+            $product[0]->description = "delivered";
         }
         return response()->json(["product" => $product,
                                 "status" => $product[0]->save(),
