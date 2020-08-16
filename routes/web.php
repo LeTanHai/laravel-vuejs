@@ -37,7 +37,7 @@ Route::get('/combo_box', 'UserController@search');
 
 Route::post('/newProduct', 'ProductController@modifyProduct');
 
-Route::get('/export', 'ProductController@getProduct')->name('export');
+Route::post('/export', 'ProductController@getProduct')->name('export');
 
 // // Gửi dữ liệu đồng thời tạo sự kiện gửi Location
 // Route::post('/map', function (Request $request) {

@@ -25,6 +25,7 @@
     },
     "dependencies": {
         "bootstrap-vue": "^2.16.0",
+        "file-saver": "^2.0.2",
         "laravel-echo": "^1.8.1",
         "moment": "^2.25.3",
         "pusher-js": "^6.0.3",

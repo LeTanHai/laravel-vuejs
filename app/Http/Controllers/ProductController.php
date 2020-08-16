@@ -132,7 +132,7 @@ class ProductController extends Controller
                                         "from_date" => $request->from_date,
                                         "to_date"=> $request->to_date]);
             case "export":
-                return Excel::download(new ExportController($request), 'products.xlsx');
+                return Excel::download(new ExportController($request), 'products.csv');
         }
     }
 

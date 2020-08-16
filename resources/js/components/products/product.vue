@@ -217,8 +217,21 @@ export default {
                 currentPage: this.currentPage,
                 limit: this.limit.selected
             };
-            const response = await axios.get('/export',{params:data});
-            console.log(response)
+            return new Promise((resolve, reject) => {
+            axios({
+                        method: 'post',
+                        url: '/export', // request address
+                        data: data, // parameter
+                        responseType: 'blob', // indicates the data type returned by the return server
+            headers: {
+                'Content-Type': 'application/json'
+            }
+            }).then(res => {
+            resolve(res.data);
+            }).catch(err => {
+            reject(err);
+            });
+        })
         }
     }
 }
