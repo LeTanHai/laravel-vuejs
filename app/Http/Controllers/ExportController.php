@@ -27,21 +27,21 @@ class ExportController extends Controller implements FromCollection,WithHeadings
     public function collection()
     {
         $product = Product::select('products.*', 'users.email as email')
-                                ->leftJoin('users', 'users.id', '=', 'products.user_id')
-                                ->where('email', 'like', "%{$this->keySearch}%")
-                                ->orWhere('products.name', 'like', "%{$this->keySearch}%")
-                                ->orWhere('products.code', 'like', "%{$this->keySearch}%")
-                                ->orWhere('products.status', 'like', "%{$this->keySearch}%");
-                $totalRecord = $product->count();
-                if ($this->limit == "*") {
-                    $listProduct = $product->offset(0);
-                }
-                else {
-                    $offset = (intval($this->currentPage) - 1) * intval($this->limit);
-                    $listProduct = $product->offset($offset)->limit(intval($this->limit));
-                }
-                $listProduct = $product->get()->sortBy("products.id");
-       return $listProduct;
+                        ->leftJoin('users', 'users.id', '=', 'products.user_id')
+                        ->where('email', 'like', "%{$this->keySearch}%")
+                        ->orWhere('products.name', 'like', "%{$this->keySearch}%")
+                        ->orWhere('products.code', 'like', "%{$this->keySearch}%")
+                        ->orWhere('products.status', 'like', "%{$this->keySearch}%");
+        $totalRecord = $product->count();
+        if ($this->limit == "*") {
+            $listProduct = $product->offset(0);
+        }
+        else {
+            $offset = (intval($this->currentPage) - 1) * intval($this->limit);
+            $listProduct = $product->offset($offset)->limit(intval($this->limit));
+        }
+        $listProduct = $product->get()->sortBy("products.id");
+        return $listProduct;
     }
     /**
      * Returns headers for report
