@@ -227,7 +227,16 @@ export default {
                 'Content-Type': 'application/json'
             }
             }).then(res => {
-            resolve(res.data);
+                console.log(res)
+                let blob = new Blob([res.data], {
+                type: 'application/vnd.ms-excel'
+                })
+                let objectUrl = URL.createObjectURL(blob)
+                let a = document.createElement('a')
+                a.href = objectUrl
+                        a.download = formatDate(new Date()) // filename,
+                a.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true, view: window}))
+                window.URL.revokeObjectURL(blob)
             }).catch(err => {
             reject(err);
             });
