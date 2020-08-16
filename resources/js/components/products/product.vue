@@ -217,29 +217,38 @@ export default {
                 currentPage: this.currentPage,
                 limit: this.limit.selected
             };
-            return new Promise((resolve, reject) => {
-            axios({
-                        method: 'post',
-                        url: '/export', // request address
-                        data: data, // parameter
-                        responseType: 'blob', // indicates the data type returned by the return server
-            headers: {
-                'Content-Type': 'application/json'
-            }
-            }).then(res => {
-                console.log(res)
-                let blob = new Blob([res.data], {
-                type: 'application/vnd.ms-excel'
-                })
-                let objectUrl = URL.createObjectURL(blob)
-                let a = document.createElement('a')
-                a.href = objectUrl
-                a.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true, view: window}))
-                window.URL.revokeObjectURL(blob)
-            }).catch(err => {
-            reject(err);
-            });
-        })
+
+            const response = await axios.post('/export', data, {responseType: 'blob'})
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', this.fileName); //or any other extension
+            document.body.appendChild(link);
+            link.click();
+
+        //     return new Promise((resolve, reject) => {
+        //     axios({
+        //                 method: 'post',
+        //                 url: '/export', // request address
+        //                 data: data, // parameter
+        //                 responseType: 'blob', // indicates the data type returned by the return server
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     }
+        //     }).then(res => {
+        //         console.log(res)
+        //         let blob = new Blob([res.data], {
+        //         type: 'application/vnd.ms-excel'
+        //         })
+        //         let objectUrl = URL.createObjectURL(blob)
+        //         let a = document.createElement('a')
+        //         a.href = objectUrl
+        //         a.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true, view: window}))
+        //         window.URL.revokeObjectURL(blob)
+        //     }).catch(err => {
+        //     reject(err);
+        //     });
+        // })
         }
     }
 }
